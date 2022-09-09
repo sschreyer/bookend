@@ -2,7 +2,21 @@
 using backend.Models;
 
 
+var policyName = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: policyName,
+                      builder =>
+                      {
+                          builder
+                            .WithOrigins("http://localhost:3000") // specifying the allowed origin
+                            .WithMethods("GET", "POST", "PUT") // defining the allowed HTTP method
+                            .AllowAnyHeader(); // allowing any header to be sent
+                      });
+});
+
 
 // Add services to the container.
 
@@ -25,6 +39,7 @@ if (builder.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(policyName);
 
 app.UseAuthorization();
 
